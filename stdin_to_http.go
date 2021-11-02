@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-func ReadStdin(reader io.Reader) (*http.Request, error) {
+func ReadStdin(reader io.Reader, tls bool) (*http.Request, error) {
 	scanner := bufio.NewScanner(reader)
 
 	if err := scanner.Err(); err != nil {
@@ -22,7 +22,13 @@ func ReadStdin(reader io.Reader) (*http.Request, error) {
 
 	// Fix up the url since only the uri is set
 	//https://stackoverflow.com/questions/19595860/http-request-requesturi-field-when-making-request-in-go
-	u, err := url.Parse(fmt.Sprintf("http://%s%s", request.Host, request.RequestURI))
+	var newUrl string
+	if tls {
+		newUrl = fmt.Sprintf("https://%s%s", request.Host, request.RequestURI)
+	} else {
+		newUrl = fmt.Sprintf("http://%s%s", request.Host, request.RequestURI)
+	}
+	u, err := url.Parse(newUrl)
 	if err != nil {
 		return nil, err
 	}

@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	request, err := StdinToHttp.ReadStdin(os.Stdin)
+	request, err := StdinToHttp.ReadStdin(os.Stdin, true)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
